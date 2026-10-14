@@ -38,6 +38,7 @@ SWITCHES: tuple[GendomeSwitchDescription, ...] = (
         state_key="acInputEnabled",
         command=COMMAND_SET_AC_INPUT,
         icon="mdi:transmission-tower-import",
+        optional=True,
     ),
     GendomeSwitchDescription(
         key="ac_output",

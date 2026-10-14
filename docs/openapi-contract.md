@@ -28,6 +28,11 @@ when `success` is true.
 Remaining-time values use minutes. `remainingTime` is selected dynamically:
 `chargeRemainingTime` when `charging` is true, otherwise
 `dischargeRemainingTime` when `charging` is false or unavailable.
+The API derives `charging` only from `inputTotalPower`: Gendome devices use
+data point 165 and BeiYiTong GO1000/GO2000 devices use data point 131. Values
+greater than zero are charging, while zero or negative values are not.
+Charge-mode/status data points (including Gendome point 24 and BeiYiTong point
+101) must not be interpreted as a boolean charging state.
 If the device does not report `discharging`, the API derives it as the inverse
 of charging and total power. When input and output total power are both zero,
 the API reports standby (`charging=false`, `discharging=false`) while

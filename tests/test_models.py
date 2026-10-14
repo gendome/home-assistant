@@ -61,3 +61,16 @@ def test_software_version_combines_wifi_and_mcu() -> None:
     )
 
     assert device.software_version == "Wi-Fi 2.0 / MCU 3.0"
+
+
+def test_semantic_charging_is_not_overridden_by_raw_charge_mode() -> None:
+    state = GendomeDeviceState.from_dict(
+        {
+            "deviceId": "1",
+            "mac": "001122334455",
+            "states": {"charging": True, "inputTotalPower": 488},
+            "rawProperties": {"chargeStatus": 0, "24": 0},
+        }
+    )
+
+    assert state.boolean("charging") is True

@@ -17,9 +17,11 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .api import GendomeApiError
 from .const import (
+    BEIYITONG_PRODUCT_KEYS,
     COMMAND_SET_AC_CHARGE_POWER,
     COMMAND_SET_BATTERY_RANGE,
     DOMAIN,
+    PRODUCT_KEY_GO_1000,
 )
 from .entity import GendomeEntity
 
@@ -92,9 +94,27 @@ class GendomeNumber(GendomeEntity, NumberEntity):
     def __init__(self, coordinator, device_id: str, description) -> None:
         super().__init__(coordinator, device_id, description.key)
         self.entity_description = description
-        self._apply_model_power_limit()
+        self._apply_device_limits()
 
-    def _apply_model_power_limit(self) -> None:
+    def _apply_device_limits(self) -> None:
+        product_key = self.device_state.device.product_key
+        if product_key in BEIYITONG_PRODUCT_KEYS:
+            if self.entity_description.key == "ac_charge_power_limit":
+                self._attr_native_min_value = 60
+                self._attr_native_max_value = (
+                    1000 if product_key == PRODUCT_KEY_GO_1000 else 1500
+                )
+                self._attr_native_step = 10
+            elif self.entity_description.key == "battery_protection_lower_soc":
+                self._attr_native_min_value = 0
+                self._attr_native_max_value = 30
+                self._attr_native_step = 10
+            elif self.entity_description.key == "battery_protection_upper_soc":
+                self._attr_native_min_value = 50
+                self._attr_native_max_value = 100
+                self._attr_native_step = 10
+            return
+
         if self.entity_description.key != "ac_charge_power_limit":
             return
         model = (self.device_state.device.model or "").lower()

@@ -14,9 +14,15 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE, UnitOfPower
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .duration import duration_minutes, format_duration_minutes
+from .const import DOMAIN
+from .duration import (
+    duration_minutes,
+    format_duration_minutes,
+    remaining_time_name,
+)
 from .entity import GendomeEntity
 
 
@@ -42,20 +48,6 @@ SENSORS: tuple[GendomeSensorEntityDescription, ...] = (
         key="remaining_time",
         translation_key="remaining_time",
         state_key="remainingTime",
-        format_duration=True,
-    ),
-    GendomeSensorEntityDescription(
-        key="charge_remaining_time",
-        translation_key="charge_remaining_time",
-        state_key="chargeRemainingTime",
-        required=False,
-        format_duration=True,
-    ),
-    GendomeSensorEntityDescription(
-        key="discharge_remaining_time",
-        translation_key="discharge_remaining_time",
-        state_key="dischargeRemainingTime",
-        required=False,
         format_duration=True,
     ),
     GendomeSensorEntityDescription(
@@ -138,11 +130,29 @@ async def async_setup_entry(
 ) -> None:
     """初始化 Gendome 传感器。"""
     coordinator = entry.runtime_data.coordinator
+    entity_registry = er.async_get(hass)
     entities = []
     for device_id, state in coordinator.data.devices.items():
+        normalized_mac = "".join(
+            char for char in state.device.mac.lower() if char.isalnum()
+        )
+        for legacy_key in (
+            "charge_remaining_time",
+            "discharge_remaining_time",
+        ):
+            legacy_entity_id = entity_registry.async_get_entity_id(
+                "sensor", DOMAIN, f"{normalized_mac}_{legacy_key}"
+            )
+            if legacy_entity_id is not None:
+                entity_registry.async_remove(legacy_entity_id)
         for description in SENSORS:
             if description.required or description.state_key in state.states:
-                entities.append(GendomeSensor(coordinator, device_id, description))
+                entity_type = (
+                    GendomeRemainingTimeSensor
+                    if description.key == "remaining_time"
+                    else GendomeSensor
+                )
+                entities.append(entity_type(coordinator, device_id, description))
     async_add_entities(entities)
 
 
@@ -175,3 +185,15 @@ class GendomeSensor(GendomeEntity, SensorEntity):
             self.device_state.value(self.entity_description.state_key)
         )
         return {"minutes": minutes} if minutes is not None else None
+
+
+class GendomeRemainingTimeSensor(GendomeSensor):
+    """名称随当前充电状态变化的单一剩余时长实体。"""
+
+    @property
+    def name(self) -> str:
+        """充电时显示充电剩余时长，否则显示放电剩余时长。"""
+        return remaining_time_name(
+            self.device_state.boolean("charging"),
+            self.coordinator.hass.config.language,
+        )

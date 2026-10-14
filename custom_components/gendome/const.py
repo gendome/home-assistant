@@ -9,6 +9,12 @@ DOMAIN: Final = "gendome"
 NAME: Final = "Gendome"
 MANUFACTURER: Final = "Gendome"
 
+PRODUCT_KEY_GO_1000: Final = "woibp7yhn3w9qqr2"
+PRODUCT_KEY_GO_2000: Final = "qvwckuhm3ykiomiz"
+BEIYITONG_PRODUCT_KEYS: Final = frozenset(
+    {PRODUCT_KEY_GO_1000, PRODUCT_KEY_GO_2000}
+)
+
 PLATFORMS: Final = (
     "sensor",
     "binary_sensor",

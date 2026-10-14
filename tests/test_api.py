@@ -4,6 +4,7 @@ from typing import Any
 
 import pytest
 
+from custom_components.gendome import api as api_module
 from custom_components.gendome.api import (
     GendomeApiClient,
     GendomeAuthError,
@@ -35,6 +36,16 @@ class FakeRequester:
 
     async def async_request(self, method: str, url: str, **kwargs: Any):
         return self.response
+
+
+class SequenceRequester:
+    def __init__(self, responses: list[FakeResponse]) -> None:
+        self.responses = responses
+        self.requests: list[tuple[str, str]] = []
+
+    async def async_request(self, method: str, url: str, **kwargs: Any):
+        self.requests.append((method, url))
+        return self.responses.pop(0)
 
 
 @pytest.mark.asyncio
@@ -105,3 +116,46 @@ async def test_maps_api_result_scope_error() -> None:
 
     with pytest.raises(GendomePermissionError):
         await client.async_get_devices()
+
+
+@pytest.mark.asyncio
+async def test_confirms_sent_command_from_reported_device_state(monkeypatch) -> None:
+    monkeypatch.setattr(api_module, "COMMAND_POLL_INTERVAL_SECONDS", 0)
+    requester = SequenceRequester(
+        [
+            FakeResponse(
+                {
+                    "success": True,
+                    "data": {
+                        "commandId": "command-1",
+                        "deviceId": "device-1",
+                        "status": "SENT",
+                        "expected": {"acOutputEnabled": True},
+                    },
+                }
+            ),
+            FakeResponse(
+                {
+                    "success": True,
+                    "data": {
+                        "deviceId": "device-1",
+                        "states": {"acOutputEnabled": 1},
+                    },
+                }
+            ),
+        ]
+    )
+    client = GendomeApiClient(requester)
+
+    result = await client.async_wait_for_command(
+        {
+            "commandId": "command-1",
+            "deviceId": "device-1",
+            "status": "SENT",
+            "expected": {"acOutputEnabled": True},
+        },
+        wait_timeout=1,
+    )
+
+    assert result["status"] == "SUCCESS"
+    assert requester.requests[1][1].endswith("/devices/device-1/state")

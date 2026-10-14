@@ -6,6 +6,21 @@ import math
 from typing import Any
 
 
+def remaining_time_name(charging: bool | None, language: str | None) -> str:
+    """根据充电状态和 Home Assistant 语言返回动态实体名称。"""
+    normalized_language = (language or "en").lower()
+    simplified_chinese = normalized_language.startswith("zh-hans") or (
+        normalized_language in {"zh", "zh-cn", "zh-sg"}
+    )
+    if simplified_chinese:
+        return "充电剩余时长" if charging is True else "放电剩余时长"
+    return (
+        "Charge remaining time"
+        if charging is True
+        else "Discharge remaining time"
+    )
+
+
 def format_duration_minutes(value: Any, language: str | None) -> str | None:
     """使用 Home Assistant 实例语言格式化设备分钟数。"""
     total_minutes = duration_minutes(value)

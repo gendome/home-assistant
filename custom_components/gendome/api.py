@@ -153,9 +153,35 @@ class GendomeApiClient:
                 if status in FAILED_COMMAND_STATUSES:
                     self._raise_command_error(current)
                 return current
+            if await self._async_command_state_matches(current):
+                confirmed = dict(current)
+                confirmed["status"] = "SUCCESS"
+                return confirmed
         raise GendomeCommandError(
             "Timed out waiting for the device command",
             code="COMMAND_TIMEOUT",
+        )
+
+    async def _async_command_state_matches(
+        self, command: Mapping[str, Any]
+    ) -> bool:
+        """Confirm a non-terminal command from the device's reported state."""
+        device_id = command.get("deviceId")
+        expected = command.get("expected")
+        if not device_id or not isinstance(expected, Mapping) or not expected:
+            return False
+        state = _require_mapping(
+            await self._request(
+                "GET", f"/devices/{quote(str(device_id), safe='')}/state"
+            ),
+            "device state",
+        )
+        states = state.get("states")
+        if not isinstance(states, Mapping):
+            return False
+        return all(
+            key in states and _values_equal(value, states[key])
+            for key, value in expected.items()
         )
 
     async def async_send_and_wait(
@@ -291,6 +317,25 @@ def _parse_retry_after(value: str | None) -> int:
         return max(1, int(value or "60"))
     except ValueError:
         return 60
+
+
+def _values_equal(expected: Any, actual: Any) -> bool:
+    """Compare API values while tolerating boolean and numeric encodings."""
+    if isinstance(expected, bool):
+        if isinstance(actual, bool):
+            return expected is actual
+        text = str(actual).strip().lower()
+        if text in {"1", "true", "on"}:
+            return expected is True
+        if text in {"0", "false", "off"}:
+            return expected is False
+        return False
+    if isinstance(expected, (int, float)) and not isinstance(expected, bool):
+        try:
+            return float(expected) == float(actual)
+        except (TypeError, ValueError):
+            return False
+    return str(expected) == str(actual)
 
 
 def _looks_like_auth_error(code: str | None, message: str) -> bool:
