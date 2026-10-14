@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a reproducible Gendome integration problem
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please remove secrets and attach the redacted Home Assistant diagnostics.
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+    validations:
+      required: true
+  - type: input
+    id: integration_version
+    attributes:
+      label: Gendome integration version
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Device model and region
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted logs or diagnostics
+      render: text

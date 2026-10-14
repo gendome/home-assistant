@@ -1,0 +1,66 @@
+{
+  "title": "Gendome",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "Reauthenticate Gendome",
+        "description": "The Gendome authorization has expired or was revoked. Sign in again to continue using your devices."
+      }
+    },
+    "abort": {
+      "already_configured": "This Gendome account is already configured.",
+      "cannot_connect": "Unable to connect to Gendome Cloud.",
+      "invalid_auth": "The Gendome authorization is invalid or has expired.",
+      "reauth_successful": "Gendome was reauthenticated successfully.",
+      "unknown": "An unexpected error occurred while connecting to Gendome Cloud."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery_soc": {"name": "Battery"},
+      "remaining_time": {"name": "Remaining time"},
+      "charge_remaining_time": {"name": "Charge remaining time"},
+      "discharge_remaining_time": {"name": "Discharge remaining time"},
+      "input_total_power": {"name": "Input total power"},
+      "ac_input_power": {"name": "AC input power"},
+      "solar_input_power": {"name": "Solar input power"},
+      "wind_input_power": {"name": "Wind input power"},
+      "output_total_power": {"name": "Output total power"},
+      "ac_output_power": {"name": "AC output power"},
+      "dc_output_power": {"name": "DC output power"},
+      "ac_charge_power_setting": {"name": "AC charge power setting"},
+      "firmware_version": {"name": "Firmware version"}
+    },
+    "binary_sensor": {
+      "online": {"name": "Online"},
+      "charging": {"name": "Charging"},
+      "discharging": {"name": "Discharging"}
+    },
+    "switch": {
+      "ac_input": {"name": "AC input"},
+      "ac_output": {"name": "AC output"},
+      "dc_output": {"name": "DC output"},
+      "buzzer": {"name": "Buzzer"},
+      "scheduled_charging": {"name": "Scheduled charging"}
+    },
+    "number": {
+      "ac_charge_power_limit": {"name": "AC charge power limit"},
+      "battery_protection_lower_soc": {"name": "Battery protection lower SOC"},
+      "battery_protection_upper_soc": {"name": "Battery protection upper SOC"}
+    },
+    "button": {
+      "refresh_state": {"name": "Refresh state"}
+    }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "The Gendome command failed: {message}"
+    },
+    "battery_range_unavailable": {
+      "message": "The current battery protection range is unavailable. Refresh the device and try again."
+    },
+    "invalid_battery_range": {
+      "message": "The battery protection range must satisfy 0 ≤ lower SOC < upper SOC ≤ 100."
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "title": "Gendome",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "重新认证 Gendome",
+        "description": "Gendome 授权已过期或被撤销，请重新登录以继续使用设备。"
+      }
+    },
+    "abort": {
+      "already_configured": "此 Gendome 账号已经配置。",
+      "cannot_connect": "无法连接到 Gendome 云服务。",
+      "invalid_auth": "Gendome 授权无效或已过期。",
+      "reauth_successful": "Gendome 重新认证成功。",
+      "unknown": "连接 Gendome 云服务时发生未知错误。"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery_soc": {"name": "电池电量"},
+      "remaining_time": {"name": "剩余时长"},
+      "charge_remaining_time": {"name": "充电剩余时长"},
+      "discharge_remaining_time": {"name": "放电剩余时长"},
+      "input_total_power": {"name": "输入总功率"},
+      "ac_input_power": {"name": "交流输入功率"},
+      "solar_input_power": {"name": "光伏输入功率"},
+      "wind_input_power": {"name": "风能输入功率"},
+      "output_total_power": {"name": "输出总功率"},
+      "ac_output_power": {"name": "交流输出功率"},
+      "dc_output_power": {"name": "直流输出功率"},
+      "ac_charge_power_setting": {"name": "交流充电功率设置"},
+      "firmware_version": {"name": "固件版本"}
+    },
+    "binary_sensor": {
+      "online": {"name": "在线状态"},
+      "charging": {"name": "充电状态"},
+      "discharging": {"name": "放电状态"}
+    },
+    "switch": {
+      "ac_input": {"name": "交流输入"},
+      "ac_output": {"name": "交流输出"},
+      "dc_output": {"name": "直流输出"},
+      "buzzer": {"name": "蜂鸣器"},
+      "scheduled_charging": {"name": "定时充电"}
+    },
+    "number": {
+      "ac_charge_power_limit": {"name": "交流充电功率限制"},
+      "battery_protection_lower_soc": {"name": "电池保护电量下限"},
+      "battery_protection_upper_soc": {"name": "电池保护电量上限"}
+    },
+    "button": {
+      "refresh_state": {"name": "刷新状态"}
+    }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "Gendome 命令执行失败：{message}"
+    },
+    "battery_range_unavailable": {
+      "message": "当前电池保护范围不可用，请刷新设备后重试。"
+    },
+    "invalid_battery_range": {
+      "message": "电池保护范围必须满足 0 ≤ 电量下限 < 电量上限 ≤ 100。"
+    }
+  }
+}

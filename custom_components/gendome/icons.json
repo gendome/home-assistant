@@ -1,0 +1,21 @@
+{
+  "entity": {
+    "sensor": {
+      "remaining_time": {"default": "mdi:timer-sand"},
+      "charge_remaining_time": {"default": "mdi:battery-clock"},
+      "discharge_remaining_time": {"default": "mdi:battery-clock-outline"},
+      "firmware_version": {"default": "mdi:chip"}
+    },
+    "binary_sensor": {
+      "online": {"default": "mdi:cloud-check"},
+      "charging": {"default": "mdi:battery-charging"},
+      "discharging": {"default": "mdi:battery-arrow-down"}
+    },
+    "switch": {
+      "scheduled_charging": {"default": "mdi:calendar-clock"}
+    },
+    "button": {
+      "refresh_state": {"default": "mdi:refresh"}
+    }
+  }
+}
