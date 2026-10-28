@@ -66,6 +66,6 @@ request carries the matching `code_verifier`, `client_id`, code, and redirect
 URI. Refresh requests also identify the public client without HTTP Basic or a
 client secret.
 
-Before release, verify access-token expiry, refresh-token expiry and rotation,
+When validating a release, verify access-token expiry, refresh-token expiry and rotation,
 password-change behavior, PKCE rejection, revocation propagation, and the exact
 redirect URI.
