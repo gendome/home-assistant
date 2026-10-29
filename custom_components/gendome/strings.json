@@ -28,13 +28,12 @@
       "output_total_power": {"name": "Output total power"},
       "ac_output_power": {"name": "AC output power"},
       "dc_output_power": {"name": "DC output power"},
-      "ac_charge_power_setting": {"name": "AC charge power setting"},
-      "firmware_version": {"name": "Firmware version"}
+      "ac_charge_power_setting": {"name": "AC charge power setting"}
     },
     "binary_sensor": {
-      "online": {"name": "Online"},
+      "online": {"name": "Online", "state": {"on": "Online", "off": "Offline"}},
       "charging": {"name": "Charging"},
-      "discharging": {"name": "Discharging"}
+      "discharging": {"name": "Discharging", "state": {"on": "Discharging", "off": "Not discharging"}}
     },
     "switch": {
       "ac_input": {"name": "AC input"},

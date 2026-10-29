@@ -114,12 +114,6 @@ SENSORS: tuple[GendomeSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
     ),
-    GendomeSensorEntityDescription(
-        key="firmware_version",
-        translation_key="firmware_version",
-        state_key="firmwareVersion",
-        required=False,
-    ),
 )
 
 
@@ -139,6 +133,7 @@ async def async_setup_entry(
         for legacy_key in (
             "charge_remaining_time",
             "discharge_remaining_time",
+            "firmware_version",
         ):
             legacy_entity_id = entity_registry.async_get_entity_id(
                 "sensor", DOMAIN, f"{normalized_mac}_{legacy_key}"

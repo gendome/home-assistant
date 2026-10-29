@@ -28,13 +28,12 @@
       "output_total_power": {"name": "输出总功率"},
       "ac_output_power": {"name": "交流输出功率"},
       "dc_output_power": {"name": "直流输出功率"},
-      "ac_charge_power_setting": {"name": "交流充电功率设置"},
-      "firmware_version": {"name": "固件版本"}
+      "ac_charge_power_setting": {"name": "交流充电功率设置"}
     },
     "binary_sensor": {
-      "online": {"name": "在线状态"},
+      "online": {"name": "在线状态", "state": {"on": "在线", "off": "离线"}},
       "charging": {"name": "充电状态"},
-      "discharging": {"name": "放电状态"}
+      "discharging": {"name": "放电状态", "state": {"on": "正在放电", "off": "未在放电"}}
     },
     "switch": {
       "ac_input": {"name": "交流输入"},

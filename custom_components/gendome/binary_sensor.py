@@ -28,7 +28,7 @@ BINARY_SENSORS: tuple[GendomeBinarySensorDescription, ...] = (
         key="online",
         translation_key="online",
         state_key="online",
-        device_class=BinarySensorDeviceClass.CONNECTIVITY,
+        icon="mdi:cloud-check",
     ),
     GendomeBinarySensorDescription(
         key="charging",
