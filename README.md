@@ -23,7 +23,7 @@ refreshes the coordinated device state.
 
 ## Connecting your account
 
-1. Install **Gendome** using the HACS instructions below and restart Home Assistant.
+1. Download **Gendome** in HACS, then restart Home Assistant service.
 2. Open **Settings → Devices & services → Add integration → Gendome**.
 3. Home Assistant opens the Gendome authorization website in the browser.
 4. Sign in with your Gendome App account, review the requested permissions, and
@@ -61,14 +61,14 @@ with:
 The public client ID is safe to ship in the integration. It must never have a
 client secret because every HACS installation can inspect the source code.
 
-## Installation with HACS
+## Download and add with HACS
 
 Add the Gendome repository to HACS and download the integration:
 
 1. In HACS, open **Integrations**, then **Custom repositories**.
 2. Add `https://github.com/gendome/home-assistant.git` with category
    **Integration**.
-3. Find and install **Gendome**, then restart Home Assistant.
+3. Find and download **Gendome**, then restart Home Assistant service.
 4. Open **Settings → Devices & services → Add integration → Gendome** and
    complete the browser authorization flow.
 
