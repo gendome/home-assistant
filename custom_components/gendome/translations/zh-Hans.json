@@ -48,7 +48,7 @@
       "battery_protection_upper_soc": {"name": "电池保护电量上限"}
     },
     "button": {
-      "refresh_state": {"name": "刷新状态"}
+      "refresh_state": {"name": "数据刷新"}
     }
   },
   "exceptions": {
