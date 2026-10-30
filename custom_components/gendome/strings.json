@@ -48,7 +48,7 @@
       "battery_protection_upper_soc": {"name": "Battery protection upper SOC"}
     },
     "button": {
-      "refresh_state": {"name": "Refresh data"}
+      "refresh_state": {"name": "A ·Refresh data"}
     }
   },
   "exceptions": {

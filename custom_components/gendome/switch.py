@@ -45,7 +45,7 @@ SWITCHES: tuple[GendomeSwitchDescription, ...] = (
         translation_key="ac_output",
         state_key="acOutputEnabled",
         command=COMMAND_SET_AC_OUTPUT,
-        icon="mdi:power-plug-output",
+        icon="mdi:power-socket",
     ),
     GendomeSwitchDescription(
         key="dc_output",
