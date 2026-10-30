@@ -1,6 +1,6 @@
 # Gendome for Home Assistant
 
-Connect supported Gendome Home 3000 and Go series energy devices to Home
+Connect supported Gendome Home and Go series energy devices to Home
 Assistant. Monitor device status and power, control supported functions, and
 use your devices in automations. The integration connects to Gendome cloud
 services and uses browser-based OAuth2 account linking.
