@@ -31,7 +31,7 @@
       "ac_charge_power_setting": {"name": "交流充电功率设置"}
     },
     "binary_sensor": {
-      "online": {"name": "在线状态", "state": {"on": "在线", "off": "离线"}},
+      "online": {"name": "A  · 在线状态", "state": {"on": "在线", "off": "离线"}},
       "charging": {"name": "充电状态"},
       "discharging": {"name": "放电状态", "state": {"on": "正在放电", "off": "未在放电"}}
     },
