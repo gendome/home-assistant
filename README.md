@@ -15,11 +15,24 @@ services and uses browser-based OAuth2 account linking.
 | Switch | AC output, DC output, scheduled charging |
 | Optional switch | AC input and buzzer (created only when the API exposes the corresponding state) |
 | Number | AC charge power limit, battery protection lower SOC, battery protection upper SOC |
-| Button | Refresh state |
 
 Entities use `mac + entity_key` as their stable unique ID. Controls are not
 optimistic: the integration waits for the Java OpenAPI command result and then
 refreshes the coordinated device state.
+
+## Automatic synchronization
+
+The integration automatically synchronizes device data from Gendome Cloud
+approximately every **60 seconds**, even when the Home Assistant app is closed.
+No scheduled refresh automation is needed. After a successful device control
+command, the integration requests updated state; scheduled-charging changes
+update the displayed plan using the API response.
+
+每 60 秒自动同步，无需配置定时刷新。关闭手机 App 后，Home Assistant
+服务端仍会继续同步。
+
+The manual refresh button has been removed. If you previously created an
+automation to press that button, remove that automation after updating.
 
 ## Connecting your account
 

@@ -46,9 +46,6 @@
       "ac_charge_power_limit": {"name": "AC charge power limit"},
       "battery_protection_lower_soc": {"name": "Battery protection lower SOC"},
       "battery_protection_upper_soc": {"name": "Battery protection upper SOC"}
-    },
-    "button": {
-      "refresh_state": {"name": "A ·Refresh data"}
     }
   },
   "exceptions": {
@@ -56,7 +53,7 @@
       "message": "The Gendome command failed: {message}"
     },
     "battery_range_unavailable": {
-      "message": "The current battery protection range is unavailable. Refresh the device and try again."
+      "message": "The current battery protection range is unavailable. Wait for the next automatic sync and try again."
     },
     "invalid_battery_range": {
       "message": "The battery protection range must satisfy 0 ≤ lower SOC < upper SOC ≤ 100."

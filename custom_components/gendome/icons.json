@@ -12,9 +12,6 @@
     },
     "switch": {
       "scheduled_charging": {"default": "mdi:calendar-clock"}
-    },
-    "button": {
-      "refresh_state": {"default": "mdi:refresh"}
     }
   }
 }

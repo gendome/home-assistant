@@ -46,9 +46,6 @@
       "ac_charge_power_limit": {"name": "交流充电功率限制"},
       "battery_protection_lower_soc": {"name": "电池保护电量下限"},
       "battery_protection_upper_soc": {"name": "电池保护电量上限"}
-    },
-    "button": {
-      "refresh_state": {"name": "A  · 数据刷新"}
     }
   },
   "exceptions": {
@@ -56,7 +53,7 @@
       "message": "Gendome 命令执行失败：{message}"
     },
     "battery_range_unavailable": {
-      "message": "当前电池保护范围不可用，请刷新设备后重试。"
+      "message": "当前电池保护范围不可用，请等待自动同步后重试。"
     },
     "invalid_battery_range": {
       "message": "电池保护范围必须满足 0 ≤ 电量下限 < 电量上限 ≤ 100。"
