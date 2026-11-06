@@ -22,17 +22,10 @@ refreshes the coordinated device state.
 
 ## Automatic synchronization
 
-The integration automatically synchronizes device data from Gendome Cloud
-approximately every **60 seconds**, even when the Home Assistant app is closed.
-No scheduled refresh automation is needed. After a successful device control
-command, the integration requests updated state; scheduled-charging changes
-update the displayed plan using the API response.
+Device data syncs automatically about every **60 seconds**.
+No refresh automation is needed.
 
-每 60 秒自动同步，无需配置定时刷新。关闭手机 App 后，Home Assistant
-服务端仍会继续同步。
-
-The manual refresh button has been removed. If you previously created an
-automation to press that button, remove that automation after updating.
+The manual refresh button has been removed; delete any automations that used it.
 
 ## Connecting your account
 

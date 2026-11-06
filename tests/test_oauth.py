@@ -107,8 +107,11 @@ async def test_public_token_request_never_sends_a_secret(monkeypatch) -> None:
         json=AsyncMock(return_value={"access_token": "token", "expires_in": 3600}),
     )
     session = SimpleNamespace(post=AsyncMock(return_value=response))
+    # HA 2026.11 moved token requests into the shared OAuth2 helper.
+    oauth_module = config_flow_module.config_entry_oauth2_flow
+    token_helpers = getattr(oauth_module, "oauth2", oauth_module)
     monkeypatch.setattr(
-        config_flow_module.config_entry_oauth2_flow,
+        token_helpers,
         "async_get_clientsession",
         lambda _hass: session,
     )
@@ -123,6 +126,7 @@ async def test_public_token_request_never_sends_a_secret(monkeypatch) -> None:
     assert request_data["client_id"] == PUBLIC_OAUTH_CLIENT_ID
     assert "client_secret" not in request_data
     assert "auth" not in session.post.await_args.kwargs
+    assert "Authorization" not in (session.post.await_args.kwargs.get("headers") or {})
 
 
 @pytest.mark.asyncio
