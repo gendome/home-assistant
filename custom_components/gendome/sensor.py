@@ -188,7 +188,10 @@ class GendomeRemainingTimeSensor(GendomeSensor):
     @property
     def name(self) -> str:
         """充电时显示充电剩余时长，否则显示放电剩余时长。"""
+        charging = self.device_state.boolean("remainingTimeCharging")
+        if charging is None:
+            charging = self.device_state.boolean("charging")
         return remaining_time_name(
-            self.device_state.boolean("charging"),
+            charging,
             self.coordinator.hass.config.language,
         )

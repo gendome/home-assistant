@@ -13,6 +13,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .api import GendomeApiError
 from .const import (
+    BEIYITONG_PRODUCT_KEYS,
     COMMAND_SET_AC_INPUT,
     COMMAND_SET_AC_OUTPUT,
     COMMAND_SET_BUZZER,
@@ -123,6 +124,10 @@ class GendomeScheduledChargingSwitch(GendomeEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool | None:
+        if self.device_state.device.product_key in BEIYITONG_PRODUCT_KEYS:
+            enabled = self.device_state.boolean("scheduledChargingEnabled")
+            if enabled is not None:
+                return enabled
         schedule = self.coordinator.data.schedules.get(self._device_id)
         if not schedule:
             return None
@@ -147,6 +152,8 @@ class GendomeScheduledChargingSwitch(GendomeEntity, SwitchEntity):
         except GendomeApiError as err:
             raise _control_error(err) from err
         self.coordinator.async_set_schedule(self._device_id, dict(schedule))
+        if self.device_state.device.product_key in BEIYITONG_PRODUCT_KEYS:
+            await self.coordinator.async_request_refresh()
 
 
 def _control_error(err: GendomeApiError) -> HomeAssistantError:
