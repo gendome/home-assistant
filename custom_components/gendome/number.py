@@ -99,20 +99,18 @@ class GendomeNumber(GendomeEntity, NumberEntity):
     def _apply_device_limits(self) -> None:
         product_key = self.device_state.device.product_key
         if product_key in BEIYITONG_PRODUCT_KEYS:
+            self._attr_native_step = 1
             if self.entity_description.key == "ac_charge_power_limit":
                 self._attr_native_min_value = 60
                 self._attr_native_max_value = (
                     1000 if product_key == PRODUCT_KEY_GO_1000 else 1500
                 )
-                self._attr_native_step = 10
             elif self.entity_description.key == "battery_protection_lower_soc":
                 self._attr_native_min_value = 0
                 self._attr_native_max_value = 30
-                self._attr_native_step = 10
             elif self.entity_description.key == "battery_protection_upper_soc":
                 self._attr_native_min_value = 50
                 self._attr_native_max_value = 100
-                self._attr_native_step = 10
             return
 
         if self.entity_description.key != "ac_charge_power_limit":
@@ -133,6 +131,20 @@ class GendomeNumber(GendomeEntity, NumberEntity):
             return None
 
     async def async_set_native_value(self, value: float) -> None:
+        if not float(value).is_integer():
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="invalid_whole_number",
+            )
+        if not self.native_min_value <= value <= self.native_max_value:
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="number_out_of_range",
+                translation_placeholders={
+                    "min": str(self.native_min_value),
+                    "max": str(self.native_max_value),
+                },
+            )
         integer_value = int(value)
         if self.entity_description.command == COMMAND_SET_AC_CHARGE_POWER:
             payload = {"power": integer_value}
@@ -167,6 +179,13 @@ class GendomeNumber(GendomeEntity, NumberEntity):
             raise HomeAssistantError(
                 translation_domain=DOMAIN,
                 translation_key="invalid_battery_range",
+            )
+        if self.device_state.device.product_key in BEIYITONG_PRODUCT_KEYS and (
+            lower > 30 or upper < 50
+        ):
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="invalid_go_battery_limits",
             )
         return {"lowerSoc": lower, "upperSoc": upper}
 

@@ -102,11 +102,10 @@ Assistant `config/custom_components` directory and restart Home Assistant.
   available so it can report `off`.
 - Battery protection requires `0 ≤ lower SOC < upper SOC ≤ 100` both in Home
   Assistant and on the backend.
-- AC charge power gets a Home Assistant model limit for Home 3000, Go 300,
-  Go 800, GO1000 (60–1000 W), and GO2000 (60–1500 W); the backend remains
-  authoritative.
-- GO1000 and GO2000 battery protection limits follow the device protocol:
-  lower SOC 0–30%, upper SOC 50–100%, both in 10% steps.
+- AC charging power limits vary by model. GO1000 supports 60–1000 W and
+  GO2000 supports 60–1500 W, both in 1 W increments.
+- On GO1000 and GO2000, the battery protection lower limit is 0–30% and the
+  upper limit is 50–100%. Both can be set in steps of 1 percentage point.
 - Turning off AC or DC output can immediately interrupt connected loads.
 
 ## Diagnostics and troubleshooting
@@ -124,15 +123,9 @@ serial number, MAC, and device IDs are redacted or masked. See
 - Buzzer support stays hidden until the backend returns its semantic state.
 - Storm, TOU, self-consumption, reserve SOC, forced discharge, factory reset,
   UPS protection changes, and OTA are not exposed.
-- Remaining-time values use minutes. Home Assistant creates one stable entity:
-  its displayed name is **Charge remaining time** while `charging` is true and
-  **Discharge remaining time** while `charging` is false or unknown.
-- Charging is derived only from `inputTotalPower`: Gendome devices use data
-  point 165 and GO1000/GO2000 use data point 131. A value greater than zero
-  means charging; charge-mode/status data points are not used.
-- When both input/charge total power and output/discharge total power are zero,
-  the device is in standby: both charging and discharging are false, while the
-  dynamic remaining time still uses the discharge-side value.
+- The remaining-time sensor shows an estimate in minutes. Its label changes
+  between **Charge remaining time** and **Discharge remaining time**. On
+  GO1000 and GO2000, it follows the mode reported by the device when available.
 - Product capabilities are inferred from semantic state keys until the backend
   adds an explicit capability object.
 

@@ -49,6 +49,15 @@
     }
   },
   "exceptions": {
+    "invalid_whole_number": {
+      "message": "Enter a whole number."
+    },
+    "number_out_of_range": {
+      "message": "Enter a value between {min} and {max}."
+    },
+    "invalid_go_battery_limits": {
+      "message": "Set the lower limit to 0–30% and the upper limit to 50–100%. Check both limits before saving."
+    },
     "command_failed": {
       "message": "The Gendome command failed: {message}"
     },

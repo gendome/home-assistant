@@ -49,6 +49,15 @@
     }
   },
   "exceptions": {
+    "invalid_whole_number": {
+      "message": "请输入整数。"
+    },
+    "number_out_of_range": {
+      "message": "请输入 {min} 到 {max} 之间的数值。"
+    },
+    "invalid_go_battery_limits": {
+      "message": "请将电量下限设为 0–30%，上限设为 50–100%。保存前请检查两个限值。"
+    },
     "command_failed": {
       "message": "Gendome 命令执行失败：{message}"
     },
