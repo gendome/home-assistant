@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 - 2026-11-10
+
+- Fully redact account identifiers and omit API request URLs and error messages
+  from exported diagnostics.
+- Mark entities as unavailable when a device is removed from the account.
+- Use the plain Online entity name without a sorting prefix.
+
 ## 1.0.0 - 2026-10-14
 
 - Added browser-based OAuth2 account linking with Authorization Code and S256
