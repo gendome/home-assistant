@@ -26,7 +26,7 @@ class GendomeEntity(CoordinatorEntity[GendomeDataUpdateCoordinator]):
         super().__init__(coordinator, context=device_id)
         self._device_id = device_id
         self._available_when_offline = available_when_offline
-        device = self.device_state.device
+        device = coordinator.data.devices[device_id].device
         normalized_mac = "".join(char for char in device.mac.lower() if char.isalnum())
         self._attr_unique_id = f"{normalized_mac}_{entity_key}"
         self._attr_device_info = DeviceInfo(
@@ -38,17 +38,16 @@ class GendomeEntity(CoordinatorEntity[GendomeDataUpdateCoordinator]):
         )
 
     @property
-    def device_state(self) -> GendomeDeviceState:
+    def device_state(self) -> GendomeDeviceState | None:
         """返回当前实体的内存设备状态。"""
-        return self.coordinator.data.devices[self._device_id]
+        return self.coordinator.data.devices.get(self._device_id)
 
     @property
     def available(self) -> bool:
         """返回云端和设备是否可用。"""
-        return bool(
+        state = self.device_state
+        return (
             self.coordinator.last_update_success
-            and (
-                self._available_when_offline
-                or self.device_state.device.online
-            )
+            and state is not None
+            and (self._available_when_offline or state.device.online)
         )

@@ -24,6 +24,7 @@ from .const import (
     PRODUCT_KEY_GO_1000,
 )
 from .entity import GendomeEntity
+from .models import GendomeDevice
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -94,10 +95,10 @@ class GendomeNumber(GendomeEntity, NumberEntity):
     def __init__(self, coordinator, device_id: str, description) -> None:
         super().__init__(coordinator, device_id, description.key)
         self.entity_description = description
-        self._apply_device_limits()
+        self._apply_device_limits(coordinator.data.devices[device_id].device)
 
-    def _apply_device_limits(self) -> None:
-        product_key = self.device_state.device.product_key
+    def _apply_device_limits(self, device: GendomeDevice) -> None:
+        product_key = device.product_key
         if product_key in BEIYITONG_PRODUCT_KEYS:
             self._attr_native_step = 1
             if self.entity_description.key == "ac_charge_power_limit":
@@ -115,7 +116,7 @@ class GendomeNumber(GendomeEntity, NumberEntity):
 
         if self.entity_description.key != "ac_charge_power_limit":
             return
-        model = (self.device_state.device.model or "").lower()
+        model = (device.model or "").lower()
         model_limits = {"go 300": 300, "go 800": 800, "home 3000": 3000}
         for name, limit in model_limits.items():
             if name in model:
@@ -124,7 +125,8 @@ class GendomeNumber(GendomeEntity, NumberEntity):
 
     @property
     def native_value(self) -> float | None:
-        value = self.device_state.value(self.entity_description.state_key)
+        state = self.device_state
+        value = state.value(self.entity_description.state_key) if state else None
         try:
             return float(value) if value is not None else None
         except (TypeError, ValueError):
@@ -163,7 +165,13 @@ class GendomeNumber(GendomeEntity, NumberEntity):
         await self.coordinator.async_request_refresh()
 
     def _battery_range_payload(self, value: int) -> dict[str, int]:
-        states = self.device_state.states
+        state = self.device_state
+        if state is None:
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="battery_range_unavailable",
+            )
+        states = state.states
         lower = _int_or_none(states.get("batteryProtectionLowerSoc"))
         upper = _int_or_none(states.get("batteryProtectionUpperSoc"))
         if self.entity_description.key == "battery_protection_lower_soc":
@@ -180,7 +188,7 @@ class GendomeNumber(GendomeEntity, NumberEntity):
                 translation_domain=DOMAIN,
                 translation_key="invalid_battery_range",
             )
-        if self.device_state.device.product_key in BEIYITONG_PRODUCT_KEYS and (
+        if state.device.product_key in BEIYITONG_PRODUCT_KEYS and (
             lower > 30 or upper < 50
         ):
             raise HomeAssistantError(

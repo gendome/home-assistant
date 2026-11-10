@@ -52,6 +52,7 @@ async def async_get_config_entry_diagnostics(
                 }
             )
         )
+    last_error = runtime.api.last_error
     return {
         "config_entry": _redact(dict(entry.data)),
         "profile": _redact(
@@ -64,7 +65,7 @@ async def async_get_config_entry_diagnostics(
             }
         ),
         "last_update_success": coordinator.last_update_success,
-        "last_error": _redact(runtime.api.last_error),
+        "last_error": {"code": last_error.get("code")} if last_error else None,
         "devices": devices,
     }
 
@@ -79,9 +80,6 @@ def _redact(value: Any, key: str | None = None) -> Any:
             "serial_number",
             "device_id",
             "deviceid",
-            "user_id",
-            "userid",
-            "username",
         }:
             return _mask_identifier(value)
         return "**REDACTED**"

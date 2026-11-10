@@ -76,4 +76,5 @@ class GendomeBinarySensor(GendomeEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """返回最新的布尔状态值。"""
-        return self.device_state.boolean(self.entity_description.state_key)
+        state = self.device_state
+        return state.boolean(self.entity_description.state_key) if state else None

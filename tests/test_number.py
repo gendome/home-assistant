@@ -30,6 +30,7 @@ def make_entity(key, product_key=PRODUCT_KEY_GO_1000):
     )
     coordinator = SimpleNamespace(
         data=SimpleNamespace(devices={"device": state}),
+        last_update_success=True,
         api=SimpleNamespace(async_send_and_wait=AsyncMock()),
         async_request_refresh=AsyncMock(),
     )
@@ -79,4 +80,16 @@ async def test_go_power_rejects_fractional_watts_without_truncating():
     with pytest.raises(HomeAssistantError) as error:
         await entity.async_set_native_value(102.5)
     assert error.value.translation_key == "invalid_whole_number"
+    entity.coordinator.api.async_send_and_wait.assert_not_awaited()
+
+
+async def test_removed_device_number_is_unavailable():
+    entity = make_entity("battery_protection_upper_soc")
+    entity.coordinator.data.devices.clear()
+
+    assert not entity.available
+    assert entity.native_value is None
+    with pytest.raises(HomeAssistantError) as error:
+        await entity.async_set_native_value(97)
+    assert error.value.translation_key == "battery_range_unavailable"
     entity.coordinator.api.async_send_and_wait.assert_not_awaited()

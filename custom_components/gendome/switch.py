@@ -93,7 +93,8 @@ class GendomeSwitch(GendomeEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool | None:
-        return self.device_state.boolean(self.entity_description.state_key)
+        state = self.device_state
+        return state.boolean(self.entity_description.state_key) if state else None
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         await self._async_set_enabled(True)
@@ -124,8 +125,11 @@ class GendomeScheduledChargingSwitch(GendomeEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool | None:
-        if self.device_state.device.product_key in BEIYITONG_PRODUCT_KEYS:
-            enabled = self.device_state.boolean("scheduledChargingEnabled")
+        state = self.device_state
+        if state is None:
+            return None
+        if state.device.product_key in BEIYITONG_PRODUCT_KEYS:
+            enabled = state.boolean("scheduledChargingEnabled")
             if enabled is not None:
                 return enabled
         schedule = self.coordinator.data.schedules.get(self._device_id)
@@ -152,7 +156,8 @@ class GendomeScheduledChargingSwitch(GendomeEntity, SwitchEntity):
         except GendomeApiError as err:
             raise _control_error(err) from err
         self.coordinator.async_set_schedule(self._device_id, dict(schedule))
-        if self.device_state.device.product_key in BEIYITONG_PRODUCT_KEYS:
+        state = self.device_state
+        if state is not None and state.device.product_key in BEIYITONG_PRODUCT_KEYS:
             await self.coordinator.async_request_refresh()
 
 

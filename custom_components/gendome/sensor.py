@@ -163,7 +163,10 @@ class GendomeSensor(GendomeEntity, SensorEntity):
     @property
     def native_value(self) -> Any:
         """返回协调器中最新的状态值。"""
-        value = self.device_state.value(self.entity_description.state_key)
+        state = self.device_state
+        if state is None:
+            return None
+        value = state.value(self.entity_description.state_key)
         if self.entity_description.format_duration:
             return format_duration_minutes(
                 value,
@@ -174,11 +177,10 @@ class GendomeSensor(GendomeEntity, SensorEntity):
     @property
     def extra_state_attributes(self) -> dict[str, int] | None:
         """为时长自动化和诊断信息提供原始分钟数。"""
-        if not self.entity_description.format_duration:
+        state = self.device_state
+        if not self.entity_description.format_duration or state is None:
             return None
-        minutes = duration_minutes(
-            self.device_state.value(self.entity_description.state_key)
-        )
+        minutes = duration_minutes(state.value(self.entity_description.state_key))
         return {"minutes": minutes} if minutes is not None else None
 
 
@@ -188,9 +190,12 @@ class GendomeRemainingTimeSensor(GendomeSensor):
     @property
     def name(self) -> str:
         """充电时显示充电剩余时长，否则显示放电剩余时长。"""
-        charging = self.device_state.boolean("remainingTimeCharging")
-        if charging is None:
-            charging = self.device_state.boolean("charging")
+        state = self.device_state
+        charging = None
+        if state is not None:
+            charging = state.boolean("remainingTimeCharging")
+            if charging is None:
+                charging = state.boolean("charging")
         return remaining_time_name(
             charging,
             self.coordinator.hass.config.language,
